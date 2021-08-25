@@ -1,33 +1,24 @@
+#include <ESP8266WiFi.h>
 #include <DHT.h>
 #include <DHT_U.h>
-
-extern volatile unsigned long timer0_millis;
-unsigned long cero_value = 0;
 
 #define DHT_PIN 12
 
 DHT dht(DHT_PIN, DHT11);
 
 float temp, hume;
+float valorAnterior;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   dht.begin();
 }
 
 void loop() {
-  if (millis() >= 5000) {
+  if (millis() - valorAnterior >= 5000) {
+    valorAnterior = millis();
     hume = dht.readHumidity();
     temp = dht.readTemperature();
     Serial.println(String(temp) + " " + String(millis()));
-    
-    setMillis(cero_value);
   }
-}
-
-void setMillis(unsigned long new_millis) {
-  uint8_t oldSREG = SREG;
-  cli();
-  timer0_millis = new_millis;
-  SREG = oldSREG;
 }
