@@ -4,7 +4,7 @@
 extern volatile unsigned long timer0_millis;
 unsigned long cero_value = 0;
 
-#define DHT_PIN 4
+#define DHT_PIN 12
 
 DHT dht(DHT_PIN, DHT11);
 
