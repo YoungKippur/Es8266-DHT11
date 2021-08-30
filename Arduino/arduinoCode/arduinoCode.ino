@@ -15,7 +15,7 @@ DHT dht(DHTPIN, DHTTYPE);
 
 FirebaseData firebaseData;
 
-float temp;
+float temp, valorAnterior;
 
 void setup() {
   Serial.begin(115200);
@@ -34,23 +34,23 @@ void setup() {
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  Firebase.reconnectWiFi(true);
 }
 
 void loop() {
-  temp = dht.readTemperature();
+  if (millis() - valorAnterior >= 5000) {
+    valorAnterior = millis();
+    
+    temp = dht.readTemperature();
+    if (isnan(temp)) { // Para ver si esta funcionando (ta bueno)
+      Serial.println(("Failed to read from DHT sensor!"));
+      return;
+    }
+    Serial.print("Temperature: ");
+    Serial.print(temp);
+    Serial.println("°C ");
+    //String fireTemp = String(temp) + String("°C");
 
-  if (isnan(temp)) { // Para ver si esta funcionando (ta bueno)
-    Serial.println(("Failed to read from DHT sensor!"));
-    delay(5000);
-    return;
+    Firebase.setInt(firebaseData, "Temperatura", temp);
   }
-
-  // Serial.print("Temperature: ");
-  // Serial.print(temp);
-  // bSerial.println("°C ");
-  String fireTemp = String(temp) + String("°C");
-  delay(5000); // Cambiar a millis!!
-
-  Firebase.setInt(firebaseData, "lectura1", 512);
-
 }
