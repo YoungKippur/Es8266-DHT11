@@ -1,89 +1,57 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
+#include <DHT.h>
 
-#define FIREBASE_HOST "example.firebaseio.com"
-#define FIREBASE_AUTH "token_or_secret"
-#define WIFI_SSID "SSID"
-#define WIFI_PASSWORD "PASSWORD"
+// Cambiar por personales
+#define FIREBASE_HOST "https://pythondht11-default-rtdb.firebaseio.com"
+#define FIREBASE_AUTH "NYGDlmwb8s0Ut8orOqTt9nkVyYxjQOTUyPXDmJFQ"
+#define WIFI_SSID "CABLEVISION-eec1"
+#define WIFI_PASSWORD "1805BMISBQHA"
 
-void setup() {
-  Serial.begin(9600);
+#define DHTPIN 12
+#define DHTTYPE DHT11
 
-  // connect to wifi.
+DHT dht(DHTPIN, DHTTYPE);
+
+float temp;
+
+void setup(){
+  Serial.begin(115200);
+  dht.begin();
+
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.print("connecting");
+  Serial.print("Connecting to ");
+  Serial.print(WIFI_SSID);
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(500);
   }
-  Serial.println();
-  Serial.print("connected: ");
-  Serial.println(WiFi.localIP());
-  
+
+  Serial.println("_");
+  Serial.print("Connected");
+  Serial.println("IP Address: ");
+  Serial.print(WiFi.localIP());
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
-int n = 0;
-
 void loop() {
-  // set value
-  Firebase.setFloat("number", 42.0);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /number failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
-  
-  // update value
-  Firebase.setFloat("number", 43.0);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /number failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
+  temp = dht.readTemperature();
 
-  // get value 
-  Serial.print("number: ");
-  Serial.println(Firebase.getFloat("number"));
-  delay(1000);
-
-  // remove value
-  Firebase.remove("number");
-  delay(1000);
-
-  // set string value
-  Firebase.setString("message", "hello world");
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /message failed:");
-      Serial.println(Firebase.error());  
-      return;
+  if (isnan(temp)) { // Para ver si esta funcionando (ta bueno)
+    Serial.println(("Failed to read from DHT sensor!"));
+    return;
   }
-  delay(1000);
-  
-  // set bool value
-  Firebase.setBool("truth", false);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /truth failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
 
-  // append a new value to /logs
-  String name = Firebase.pushInt("logs", n++);
-  // handle error
+  Serial.println("Temperature: ");
+  Serial.print(temp);
+  Serial.println("°C ");
+  String fireTemp = String(temp) + String("°C");
+  delay(5000); // Cambiar a millis!!
+
+  Firebase.pushString("/DHT11/Temperature", fireTemp);//setup path to send Temperature readings
   if (Firebase.failed()) {
-      Serial.print("pushing /logs failed:");
-      Serial.println(Firebase.error());  
-      return;
+    Serial.print("pushing /logs failed:");
+    Serial.println(Firebase.error());
+    return;
   }
-  Serial.print("pushed: /logs/");
-  Serial.println(name);
-  delay(1000);
 }
