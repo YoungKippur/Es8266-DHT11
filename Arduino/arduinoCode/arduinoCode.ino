@@ -1,10 +1,10 @@
 #include <ESP8266WiFi.h>
-#include <FirebaseArduino.h>
+#include <FirebaseESP8266.h>
 #include <DHT.h>
 
 // Cambiar por personales
-#define FIREBASE_HOST "https://pythondht11-default-rtdb.firebaseio.com"
-#define FIREBASE_AUTH "NYGDlmwb8s0Ut8orOqTt9nkVyYxjQOTUyPXDmJFQ"
+#define FIREBASE_HOST "https://pythondht11-4ce74-default-rtdb.firebaseio.com"
+#define FIREBASE_AUTH "5Ir4SU0d8EFs2hZv3imkQszchcJxCDG8v7TzEYpa"
 #define WIFI_SSID "CABLEVISION-eec1"
 #define WIFI_PASSWORD "1805BMISBQHA"
 
@@ -13,9 +13,11 @@
 
 DHT dht(DHTPIN, DHTTYPE);
 
+FirebaseData firebaseData;
+
 float temp;
 
-void setup(){
+void setup() {
   Serial.begin(115200);
   dht.begin();
 
@@ -26,11 +28,11 @@ void setup(){
     Serial.print(".");
     delay(500);
   }
-
-  Serial.println("_");
-  Serial.print("Connected");
-  Serial.println("IP Address: ");
-  Serial.print(WiFi.localIP());
+  Serial.println("");
+  Serial.print("_");
+  Serial.println("Connected");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
@@ -39,19 +41,16 @@ void loop() {
 
   if (isnan(temp)) { // Para ver si esta funcionando (ta bueno)
     Serial.println(("Failed to read from DHT sensor!"));
+    delay(5000);
     return;
   }
 
-  Serial.println("Temperature: ");
-  Serial.print(temp);
-  Serial.println("°C ");
+  // Serial.print("Temperature: ");
+  // Serial.print(temp);
+  // bSerial.println("°C ");
   String fireTemp = String(temp) + String("°C");
   delay(5000); // Cambiar a millis!!
 
-  Firebase.pushString("/DHT11/Temperature", fireTemp);//setup path to send Temperature readings
-  if (Firebase.failed()) {
-    Serial.print("pushing /logs failed:");
-    Serial.println(Firebase.error());
-    return;
-  }
+  Firebase.setInt(firebaseData, "lectura1", 512);
+
 }
