@@ -3,8 +3,8 @@
 #include <DHT.h>
 
 // Cambiar por personales
-#define FIREBASE_HOST "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-#define FIREBASE_AUTH "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+#define FIREBASE_HOST "https://pythondht11-4ce74-default-rtdb.firebaseio.com"
+#define FIREBASE_AUTH "5Ir4SU0d8EFs2hZv3imkQszchcJxCDG8v7TzEYpa"
 #define WIFI_SSID "CABLEVISION-eec1"
 #define WIFI_PASSWORD "1805BMISBQHA"
 
