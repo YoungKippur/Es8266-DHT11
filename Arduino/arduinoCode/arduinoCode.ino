@@ -3,8 +3,8 @@
 #include <DHT.h>
 
 // Cambiar por personales
-#define FIREBASE_HOST "xxxxxxxxxxxxxxxxxxxxxxx"
-#define FIREBASE_AUTH "xxxxxxxxxxxxxxxxxxxxxxx"
+#define FIREBASE_HOST "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+#define FIREBASE_AUTH "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 #define WIFI_SSID "CABLEVISION-eec1"
 #define WIFI_PASSWORD "1805BMISBQHA"
 
@@ -51,6 +51,6 @@ void loop() {
     Serial.println("°C ");
     //String fireTemp = String(temp) + String("°C");
 
-    Firebase.setInt(firebaseData, "Temperatura", temp);
+    Firebase.setFloat(firebaseData, "Temperatura", temp);
   }
 }
