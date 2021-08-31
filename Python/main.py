@@ -22,8 +22,8 @@ def make_start_switch(window, x, y, label=()):
         t.set("Stop" if v.get() else "Start")
     b = tk.Button(window, textvariable=t, command=p)
     b.place(x=x, y=y)
-    return v.get()
-
+    return v
+    
 def make_graph():
     # while (condicion del boton)
     temp = firebase.get("/Temperatura", "")
